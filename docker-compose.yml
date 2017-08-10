@@ -1,0 +1,31 @@
+version: '3'
+services:
+  heroku-16: &heroku
+    build: .
+    volumes:
+      - .:/buildpack
+    environment:
+      STACK: heroku-16
+    working_dir: /buildpack
+    command: scripts/build_nginx /buildpack/bin/nginx-heroku-16
+
+  cedar-14:
+    <<: *heroku
+    image: heroku/cedar:14
+    environment:
+      STACK: cedar-14
+    command: scripts/build_nginx /buildpack/bin/nginx-cedar-14
+
+  cedar-10:
+    <<: *heroku
+    image: heroku/cedar:10
+    environment:
+      STACK: cedar
+    command: scripts/build_nginx /buildpack/bin/nginx-cedar
+
+  shell:
+    <<: *heroku
+    environment:
+      STACK: heroku-16
+      PORT: 5000
+    command: bash
